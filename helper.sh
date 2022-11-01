@@ -57,6 +57,7 @@ if [ $1 = "help" ]; then
     echo -e "${BLUE}  update-system - update all apt installed resouces and packages${ENDCOLOR}"
     echo -e "${BLUE}  install-wp - installs wordpress${ENDCOLOR}"
     echo -e "${BLUE}  directory-check - installs wordpress${ENDCOLOR}"
+    echo -e "${BLUE}  email - takes \{email\} argument ${ENDCOLOR}"
     exit 0
 fi
 
@@ -71,6 +72,8 @@ fi
 
 # if the first argument is "install-wp", run the install wordpress command
 if [ $1 = "install-wp" ]; then
+    sudo -i 
+    wait
     echo -e "${BLUE}Installing Wordpress...${ENDCOLOR}"
     # first, lets install mariadb
     sudo apt-get install mariadb-server mariadb-client -y
@@ -231,4 +234,32 @@ if [ $1 = "check" ]; then
     wait
     checkdir "$2"
     exit 0
+fi
+
+if [ $1 = "email" ]; then
+    shift
+    if [ -z "$2" ]; then
+        echo -e "${RED}You must include an email address${ENDCOLOR}"
+        exit 1
+    fi
+    wait
+    if [ $(dpkg-query -W -f='${Status}' mailutils 2>/dev/null | grep -c "ok installed") -eq 0 ];
+    then
+        echo -e "${RED}mailutils is not installed${ENDCOLOR}"
+        sudo apt install mailutils -y
+        exit 1
+    fi
+
+    // get cpu useage
+    cpu=$(top -bn1 | grep load | awk '{printf "%.2f%%\t\t", $(NF-2)}')
+    ram=$(free -m | awk 'NR==2{printf "%.2f%%\t\t", $3*100/$2 }')
+    disk=$(df -h | awk '$NF=="/"{printf "%s\t\t", $5}')
+
+    mail -s 'VM Usage' -a From:Admin\<admin@example.com\>
+    $2 <<< "CPU: $cpu
+    RAM: $ram
+    DISK: $disk"
+
+    echo -e "${GREEN}Email Sent!${ENDCOLOR}"
+
 fi
