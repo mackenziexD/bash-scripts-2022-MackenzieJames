@@ -250,7 +250,6 @@ if [ $1 = "email" ]; then
         exit 1
     fi
 
-    // get cpu useage
     cpu=$(top -bn1 | grep load | awk '{printf "%.2f%%\t\t", $(NF-2)}')
     ram=$(free -m | awk 'NR==2{printf "%.2f%%\t\t", $3*100/$2 }')
     disk=$(df -h | awk '$NF=="/"{printf "%s\t\t", $5}')
