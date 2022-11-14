@@ -80,7 +80,7 @@ if [ $1 = "install-wp" ]; then
         wait
     fi
     # run the install-wp.sh script
-    ./install-wp.sh
+    ./install-wp.sh -x
 fi
 
 if [ $1 = "check" ]; then
