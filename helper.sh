@@ -83,6 +83,14 @@ if [ $1 = "install-wp" ]; then
     fi
     # run the install-wp.sh script
     ./install-wp.sh -x
+    
+    # check exit code
+    # using this link as ref for exit codes https://www.cyberciti.biz/faq/linux-bash-exit-status-set-exit-statusin-bash/#:~:text=List%20of%20common%20exit%20codes%20for%20GNU/Linux
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}Wordpress Installed!${ENDCOLOR}"
+    else
+        echo -e "${RED}Wordpress Installation Failed!${ENDCOLOR}"
+    fi
 fi
 
 if [ $1 = "check" ]; then
