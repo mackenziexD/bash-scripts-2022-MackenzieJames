@@ -58,6 +58,8 @@ if [ $1 = "help" ]; then
     echo -e "${BLUE}  install-wp - installs wordpress${ENDCOLOR}"
     echo -e "${BLUE}  directory-check - installs wordpress${ENDCOLOR}"
     echo -e "${BLUE}  email - takes \{email\} argument ${ENDCOLOR}"
+    echo -e "${BLUE}  create-user - create a user, will ask for a name and password ${ENDCOLOR}"
+    echo -e "${BLUE}  firewall - takes \{add\} or \{remove\} argument then \{port id\} - EXAMPLE: firewall add 8080${ENDCOLOR}"
     exit 0
 fi
 
@@ -119,4 +121,25 @@ if [ $1 = "email" ]; then
 
     echo -e "${GREEN}Email Sent!${ENDCOLOR}"
 
+fi
+
+if [ $1 = "firewall"]; then
+    if [ -z "$2" ]; then
+        echo -e "${RED}You must include an add or remove${ENDCOLOR}"
+        exit 1
+    fi
+    if [ -z "$3" ]; then
+        echo -e "${RED}You must include an port${ENDCOLOR}"
+        exit 1
+    fi
+
+    if [ $2 = "add" ]; then
+        sudo ufw allow $3
+        echo -e "${GREEN}Port $3 added to firewall${ENDCOLOR}"
+    fi
+
+    if [ $2 = "remove" ]; then
+        sudo ufw delete allow $3
+        echo -e "${GREEN}Port $3 removed from firewall${ENDCOLOR}"
+    fi
 fi
